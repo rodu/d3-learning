@@ -1,15 +1,47 @@
 module.exports = function (grunt) {
     grunt.initConfig({
-        grunt.initConfig({
-            connect: {
-                server: {
-                    options: {
-                        port: 8000,
-                        base: 'www-root'
-                    }
+        connect: {
+            options: {
+                livereload: 35729,
+                //keepalive: true
+            },
+            livereload: {
+                middleware: function (connect) {
+                    return [
+                        require('connect-livereload')(), // <--- here
+                        checkForDownload,
+                        mountFolder(connect, '.'),
+                        connect.static('.')
+                    ];
                 }
             }
-        });
+        },
+
+        watch: {
+            options: {
+                // Start a live reload server on the default port 35729
+                livereload: true
+            },
+            all: {
+                files: ['./**/*.html'],
+                tasks: [],
+            },
+            livereload: {
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                },
+                files: [
+                    './{,*/}*.html'
+                ]
+            }
+        },
+    });
+
+    grunt.registerTask('serve', function serve(){
+        grunt.task.run([
+            'connect:livereload',
+            'watch'
+        ]);
     });
 
     grunt.loadNpmTasks('grunt-contrib-connect');

@@ -17,6 +17,9 @@ window.onload = function onLoad(){
     d3.tsv('top.tsv', type, function tsv(error, data){
         var
             bar;
+        data = data.filter(function filter(d){
+            return d[DATA_PROP] > 0;
+        });
         scaleX.domain([0, d3.max(data, function dataFn(d){
             return d[DATA_PROP];
         })]);

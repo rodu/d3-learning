@@ -2,7 +2,7 @@
 window.onload = function onLoad(){
     var
         DATA_PROP = "virt",
-        margin = {top: 20, right: 20, bottom: 150, left: 20},
+        margin = {top: 20, right: 20, bottom: 100, left: 50},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom,
         barHeight = 20,

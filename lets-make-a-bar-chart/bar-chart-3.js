@@ -10,6 +10,12 @@ window.onload = function onLoad(){
             .rangeRoundBands([0, width], 0.1),
         y = d3.scale.linear()
             .range([height, 0]),
+        xAxis = d3.svg.axis()
+            .scale(x)
+            .orient('bottom'),
+        yAxis = d3.svg.axis()
+            .scale(y)
+            .orient('left'),
         chart = d3.select('.chart')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
@@ -36,7 +42,32 @@ window.onload = function onLoad(){
             return d[DATA_PROP];
         })]);
 
-        bar = chart.selectAll('g')
+        chart.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(xAxis);
+
+        chart.append('g')
+            .attr('class', 'y axis')
+            .call(yAxis);
+
+        chart.selectAll('.bar')
+            .data(data)
+            .enter().append('rect')
+                .attr('class', 'bar')
+                .attr('x', function xFn(d){
+                    return x(d.command);
+                })
+                .attr('y', function yFn(d){
+                    return y(d[DATA_PROP]);
+                })
+                .attr('height', function heightFn(d){
+                    return height - y(d[DATA_PROP]);
+                })
+                .attr('width', x.rangeBand());
+
+
+        /*bar = chart.selectAll('g')
         .data(data)
         .enter().append('g')
             .attr('transform', function transform(d){
@@ -56,12 +87,12 @@ window.onload = function onLoad(){
             .attr('x', x.rangeBand() / 2)
             /*.attr('y', function yFn(d){
                 return y(d[DATA_PROP]) + 10;
-            })*/
+            })
             .attr('y', height + 0)
-            /*.attr('dy', '0.75em')*/
             .attr('transform', 'rotate(45)')
             .text(function barText(d){
                 return d.command;
             });
+        */
     });
 };

@@ -2,7 +2,7 @@
 window.onload = function onLoad(){
     var
         DATA_PROP = "virt",
-        margin = {top: 20, right: 20, bottom: 100, left: 50},
+        margin = {top: 20, right: 20, bottom: 130, left: 80},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom,
         barHeight = 20,
@@ -45,11 +45,24 @@ window.onload = function onLoad(){
         chart.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + height + ')')
-            .call(xAxis);
+            .call(xAxis)
+            .selectAll('text')
+                .attr('y', 0)
+                .attr('x', -110)
+                .attr('dy', '0.35em')
+                .attr('transform', 'rotate(-90)')
+                .style('text-anchor', 'start');
 
         chart.append('g')
             .attr('class', 'y axis')
-            .call(yAxis);
+            .call(yAxis)
+            .append('text')
+                .attr('transform', 'rotate(-90)')
+                /*.attr('x', -(height - 20))*/
+                .attr('y', 6)
+                .attr('dy', '0.71em')
+                .style('text-anchor', 'end')
+                .text('Load');
 
         chart.selectAll('.bar')
             .data(data)

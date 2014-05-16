@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .chart {
+            border: solid 2px #CCCCCC;
+            background-color: #F3F4E5;
+        }
+
+        .chart rect {
+          fill: steelblue;
+        }
+
+        .chart text {
+          fill: black;
+          font: 10px sans-serif;
+          text-anchor: middle;
+        }
+
+        .axis text {
+          font: 12px sans-serif;
+        }
+
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+    </style>
+    <script src="/bower_components/d3/d3.js"></script>
+    <script src="visualize-top.js"></script>
+</head>
+<body>
+    <svg class="chart"></svg>
+</body>
+</html>

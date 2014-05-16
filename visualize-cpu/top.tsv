@@ -1,0 +1,203 @@
+	pid	user	pr	ni	virt	res	shr	s	cpu	mem	time	command
+	1	root	20	0	24436	2332	1308	S	0	0.0	0:00.92	init
+	2	root	20	0	0	0	0	S	0	0.0	0:00.00	kthreadd
+	3	root	20	0	0	0	0	S	0	0.0	0:03.36	ksoftirqd/0
+	6	root	RT	0	0	0	0	S	0	0.0	1:59.50	migration/0
+	7	root	RT	0	0	0	0	S	0	0.0	0:02.20	watchdog/0
+	21	root	0	-20	0	0	0	S	0	0.0	0:00.00	cpuset
+	22	root	0	-20	0	0	0	S	0	0.0	0:00.00	khelper
+	23	root	20	0	0	0	0	S	0	0.0	0:00.00	kdevtmpfs
+	24	root	0	-20	0	0	0	S	0	0.0	0:00.00	netns
+	26	root	20	0	0	0	0	S	0	0.0	0:00.16	sync_supers
+	27	root	20	0	0	0	0	S	0	0.0	0:00.00	bdi-default
+	28	root	0	-20	0	0	0	S	0	0.0	0:00.00	kintegrityd
+	29	root	0	-20	0	0	0	S	0	0.0	0:00.00	kblockd
+	30	root	0	-20	0	0	0	S	0	0.0	0:00.00	ata_sff
+	31	root	20	0	0	0	0	S	0	0.0	0:00.00	khubd
+	32	root	0	-20	0	0	0	S	0	0.0	0:00.00	md
+	37	root	20	0	0	0	0	S	0	0.0	0:00.04	khungtaskd
+	38	root	20	0	0	0	0	S	0	0.0	0:14.34	kswapd0
+	39	root	25	5	0	0	0	S	0	0.0	0:00.00	ksmd
+	40	root	39	19	0	0	0	S	0	0.0	0:00.00	khugepaged
+	41	root	20	0	0	0	0	S	0	0.0	0:00.01	fsnotify_mark
+	42	root	20	0	0	0	0	S	0	0.0	0:00.00	ecryptfs-kthrea
+	43	root	0	-20	0	0	0	S	0	0.0	0:00.00	crypto
+	51	root	0	-20	0	0	0	S	0	0.0	0:00.00	kthrotld
+	52	root	20	0	0	0	0	S	0	0.0	0:00.00	scsi_eh_0
+	53	root	20	0	0	0	0	S	0	0.0	0:00.00	scsi_eh_1
+	54	root	20	0	0	0	0	S	0	0.0	0:00.00	scsi_eh_2
+	55	root	20	0	0	0	0	S	0	0.0	0:00.00	scsi_eh_3
+	56	root	20	0	0	0	0	S	0	0.0	0:00.00	scsi_eh_4
+	57	root	20	0	0	0	0	S	0	0.0	0:00.00	scsi_eh_5
+	82	root	0	-20	0	0	0	S	0	0.0	0:00.00	devfreq_wq
+	282	root	20	0	0	0	0	S	0	0.0	0:06.16	jbd2/sdb1-8
+	283	root	0	-20	0	0	0	S	0	0.0	0:00.00	ext4-dio-unwrit
+	300	root	20	0	0	0	0	S	0	0.0	0:00.00	kworker/u:3
+	309	root	20	0	0	0	0	S	0	0.0	0:00.50	kworker/u:13
+	322	root	RT	0	0	0	0	S	0	0.0	0:42.22	migration/1
+	323	root	20	0	0	0	0	S	0	0.0	0:00.00	kworker/1:1
+	324	root	20	0	0	0	0	S	0	0.0	0:00.46	ksoftirqd/1
+	325	root	RT	0	0	0	0	S	0	0.0	0:00.77	watchdog/1
+	326	root	20	0	0	0	0	S	4	0.0	2:57.21	kworker/1:0
+	327	root	RT	0	0	0	0	S	0	0.0	0:39.09	migration/2
+	329	root	20	0	0	0	0	S	0	0.0	0:00.52	ksoftirqd/2
+	330	root	RT	0	0	0	0	S	0	0.0	0:00.47	watchdog/2
+	331	root	20	0	0	0	0	S	0	0.0	0:19.43	kworker/2:0
+	332	root	RT	0	0	0	0	S	0	0.0	0:39.45	migration/3
+	333	root	20	0	0	0	0	S	0	0.0	0:19.78	kworker/3:1
+	334	root	20	0	0	0	0	S	0	0.0	0:00.36	ksoftirqd/3
+	335	root	RT	0	0	0	0	S	0	0.0	0:00.72	watchdog/3
+	336	root	20	0	0	0	0	R	2	0.0	2:25.25	kworker/3:0
+	337	root	-51	0	0	0	0	S	0	0.0	0:00.00	irq/46-mei
+	367	root	20	0	22160	1524	352	S	0	0.0	0:00.00	udevd
+	368	root	20	0	21692	1024	328	S	0	0.0	0:00.00	udevd
+	387	root	20	0	17236	636	448	S	0	0.0	0:00.06	upstart-udev-br
+	402	root	20	0	21696	1512	820	S	0	0.0	0:00.06	udevd
+	592	root	0	-20	0	0	0	S	0	0.0	0:00.00	edac-poller
+	650	root	20	0	0	0	0	S	0	0.0	0:00.55	jbd2/sdb2-8
+	661	root	0	-20	0	0	0	S	0	0.0	0:00.00	ext4-dio-unwrit
+	683	root	0	-20	0	0	0	S	0	0.0	0:00.00	kpsmoused
+	697	root	20	0	0	0	0	S	0	0.0	2:12.06	kworker/2:1
+	699	root	20	0	7268	1568	1072	S	0	0.0	0:00.01	dhclient
+	807	syslog	20	0	243m	1272	944	S	0	0.0	0:03.34	rsyslogd
+	899	root	20	0	15192	396	192	S	0	0.0	0:00.00	upstart-socket-
+	903	messageb	20	0	24948	2160	836	S	0	0.0	0:02.06	dbus-daemon
+	924	root	0	-20	0	0	0	S	0	0.0	0:00.00	hd-audio0
+	927	root	20	0	128m	3000	2456	S	0	0.0	0:00.00	nm-vpnc-service
+	929	root	20	0	79044	2836	2036	S	0	0.0	0:00.06	modem-manager
+	932	root	20	0	24612	1676	1348	S	0	0.0	0:01.20	vpnc
+	959	root	20	0	21328	1428	1148	S	0	0.0	0:00.00	bluetoothd
+	980	avahi	20	0	32428	1808	1372	S	0	0.0	0:05.00	avahi-daemon
+	982	avahi	20	0	32184	428	176	S	0	0.0	0:00.00	avahi-daemon
+	1029	root	20	0	243m	6064	4512	S	0	0.1	0:00.97	NetworkManager
+	1030	root	10	-10	0	0	0	S	0	0.0	0:00.00	krfcommd
+	1031	root	20	0	102m	5188	3172	S	0	0.1	0:00.21	cupsd
+	1050	root	20	0	207m	5212	3628	S	0	0.1	0:01.75	polkitd
+	1069	root	20	0	20016	944	780	S	0	0.0	0:00.00	getty
+	1072	colord	20	0	498m	8404	5504	S	0	0.1	0:00.10	colord
+	1084	root	20	0	20016	936	780	S	0	0.0	0:00.00	getty
+	1090	root	20	0	119m	788	320	S	0	0.0	0:03.90	iked.real
+	1106	root	20	0	20016	944	780	S	0	0.0	0:00.00	getty
+	1113	root	20	0	20016	944	780	S	0	0.0	0:00.00	getty
+	1122	root	20	0	20016	940	780	S	0	0.0	0:00.00	getty
+	1126	root	20	0	4464	812	540	S	0	0.0	0:00.00	acpid
+	1128	daemon	20	0	16912	384	220	S	0	0.0	0:00.00	atd
+	1129	root	20	0	19116	1036	796	S	0	0.0	0:00.07	cron
+	1140	mongodb	20	0	1598m	29m	2828	S	0	0.4	4:23.55	mongod
+	1148	root	20	0	15984	692	516	S	0	0.0	0:10.13	irqbalance
+	1203	root	0	-20	0	0	0	S	0	0.0	0:00.00	iprt
+	1558	root	20	0	20016	948	780	S	0	0.0	0:00.00	getty
+	1574	root	20	0	280m	4224	3448	S	0	0.1	0:00.03	lightdm
+	1581	root	20	0	575m	196m	138m	S	8	2.5	164:43.62	Xorg
+	1585	root	20	0	0	0	0	S	0	0.0	0:00.00	firegl
+	1586	root	20	0	0	0	0	S	0	0.0	0:00.00	firegl
+	1587	root	20	0	0	0	0	S	0	0.0	0:00.00	firegl
+	1609	root	20	0	132m	4408	3668	S	0	0.1	0:00.98	accounts-daemon
+	1626	root	20	0	2042m	3924	2816	S	0	0.0	0:00.56	console-kit-dae
+	1720	root	20	0	214m	4280	3248	S	0	0.1	0:00.07	upowerd
+	1889	root	20	0	167m	4316	3432	S	0	0.1	0:00.03	lightdm
+	1891	root	20	0	0	0	0	S	0	0.0	0:02.51	flush-8:16
+	1892	nobody	20	0	33052	1592	1344	S	0	0.0	0:04.26	dnsmasq
+	2040	rob	20	0	4404	692	576	S	0	0.0	0:00.01	sh
+	2074	rob	20	0	12572	320	0	S	0	0.0	0:00.19	ssh-agent
+	2077	rob	20	0	26564	800	488	S	0	0.0	0:00.00	dbus-launch
+	2078	rob	20	0	27488	3396	628	S	0	0.0	0:12.58	dbus-daemon
+	2086	rob	20	0	47608	2732	2188	S	0	0.0	0:00.13	xfconfd
+	2091	rob	20	0	68404	3088	2228	S	0	0.0	0:08.45	xscreensaver
+	2093	rob	20	0	156m	6508	5072	S	0	0.1	0:00.08	xfce4-session
+	2099	rob	20	0	155m	13m	9048	S	0	0.2	3:27.22	xfwm4
+	2101	rob	20	0	326m	17m	10m	S	2	0.2	0:16.00	xfce4-panel
+	2103	rob	20	0	464m	20m	13m	S	0	0.3	0:25.22	Thunar
+	2105	rob	20	0	283m	27m	8504	S	0	0.3	0:05.00	xfdesktop
+	2109	rob	20	0	586m	39m	12m	S	2	0.5	2:01.65	docky
+	2119	rob	20	0	417m	7332	5304	S	0	0.1	0:22.83	zeitgeist-datah
+	2120	rob	20	0	126m	3952	2808	S	0	0.0	0:00.02	xfsettingsd
+	2125	rob	20	0	521m	15m	10m	S	0	0.2	0:01.98	update-notifier
+	2128	rob	20	0	257m	23m	11m	S	0	0.3	0:06.66	applet.py
+	2133	rob	20	0	352m	5740	4340	S	0	0.1	0:00.53	zeitgeist-daemo
+	2134	rob	20	0	738m	10m	6256	S	0	0.1	0:00.18	xfce4-volumed
+	2138	rob	20	0	52412	2452	2052	S	0	0.0	0:00.09	gvfsd
+	2140	rob	20	0	279m	3568	2960	S	0	0.0	0:00.00	gvfs-fuse-daemo
+	2151	rob	20	0	186m	5632	4516	S	0	0.1	0:00.51	polkit-gnome-au
+	2153	rob	20	0	506m	17m	11m	S	0	0.2	0:01.76	nm-applet
+	2161	root	20	0	188m	4024	3008	S	0	0.0	0:02.13	udisks-daemon
+	2164	rob	20	0	244m	7660	5432	S	0	0.1	0:00.55	zeitgeist-fts
+	2171	rob	20	0	603m	30m	12m	S	0	0.4	0:00.21	blueman-applet
+	2174	root	20	0	45520	780	432	S	0	0.0	0:00.00	udisks-daemon
+	2181	rob	20	0	152m	4840	3416	S	0	0.1	0:00.69	xfce4-settings-
+	2184	rob	20	0	11412	352	276	S	0	0.0	0:00.00	cat
+	2204	rob	20	0	418m	6236	3976	S	0	0.1	4:57.08	pulseaudio
+	2206	rtkit	21	1	164m	1332	1092	S	0	0.0	0:01.51	rtkit-daemon
+	2208	rob	20	0	57368	3048	2000	S	0	0.0	0:00.16	gconfd-2
+	2243	rob	20	0	213m	4504	3200	S	0	0.1	0:00.34	xfce4-power-man
+	2246	rob	20	0	217m	14m	9972	S	0	0.2	0:00.20	panel-10-xfce4-
+	2250	rob	20	0	147m	7344	5860	S	0	0.1	0:00.06	panel-4-systray
+	2251	rob	20	0	580m	16m	9.8m	S	0	0.2	0:07.09	xfce4-indicator
+	2259	rob	20	0	146m	9192	7388	S	0	0.1	0:00.74	panel-7-datetim
+	2260	rob	20	0	223m	12m	9052	S	0	0.2	0:00.18	panel-9-xfsm-lo
+	2273	rob	20	0	223m	4788	3716	S	0	0.1	0:00.33	gvfs-gdu-volume
+	2278	rob	20	0	138m	2468	1972	S	0	0.0	0:01.80	gvfs-afc-volume
+	2282	rob	20	0	515m	7240	5144	S	0	0.1	0:05.10	indicator-messa
+	2285	rob	20	0	60368	2448	1896	S	0	0.0	0:00.00	gvfs-gphoto2-vo
+	2287	rob	20	0	483m	5116	3980	S	0	0.1	0:05.40	indicator-appli
+	2292	rob	20	0	524m	7332	5748	S	0	0.1	0:00.41	indicator-sound
+	2326	rob	20	0	57816	2480	2020	S	0	0.0	0:00.10	obex-data-serve
+	2344	rob	20	0	69796	4584	3612	S	0	0.1	0:00.07	gvfsd-trash
+	2369	rob	20	0	286m	3968	3300	S	0	0.0	0:00.00	at-spi-bus-laun
+	2418	rob	20	0	1418m	538m	52m	S	0	6.8	264:22.95	firefox
+	2535	rob	20	0	904m	23m	12m	S	2	0.3	0:37.24	xfce4-terminal
+	2537	rob	20	0	0	0	0	Z	0	0.0	0:00.00	xfce4-terminal	<defunct>
+	2538	rob	20	0	47884	5720	2272	S	0	0.1	0:00.48	zsh
+	2586	rob	20	0	647m	40m	20m	S	0	0.5	1:02.10	pidgin
+	2829	rob	20	0	447m	5452	4272	S	0	0.1	0:01.05	gnome-keyring-d
+	2964	rob	20	0	149m	8920	1480	S	0	0.1	0:00.00	zim
+	2965	rob	20	0	445m	41m	15m	S	0	0.5	0:10.72	zim
+	3024	rob	20	0	257m	21m	15m	S	0	0.3	0:06.90	plugin-containe
+	3027	rob	20	0	470m	13m	6612	S	0	0.2	0:03.59	GoogleTalkPlugi
+	3096	rob	20	0	1151m	84m	14m	S	0	1.1	0:04.60	evince
+	3103	rob	20	0	175m	2412	2008	S	0	0.0	0:00.00	evinced
+	3130	rob	20	0	230m	4428	3616	S	0	0.1	0:00.01	gvfsd-http
+	3176	rob	20	0	615m	97m	14m	S	0	1.2	0:05.00	evince
+	3778	rob	20	0	255m	2660	2148	S	0	0.0	0:00.20	dconf-service
+	3897	rob	20	0	416m	38m	23m	S	0	0.5	0:51.97	plugin-containe
+	3913	rob	20	0	384m	28m	15m	S	0	0.4	0:00.54	stardict
+	3917	rob	20	0	344m	4048	3216	S	0	0.0	0:00.00	bonobo-activati
+	4361	rob	20	0	47824	5556	2268	S	0	0.1	0:00.30	zsh
+	4848	rob	20	0	955m	67m	5704	S	12	0.8	1:00.91	grunt
+	4864	root	20	0	0	0	0	S	0	0.0	0:03.35	kworker/0:2
+	4909	rob	20	0	47496	5220	2248	S	0	0.1	0:00.16	zsh
+	5002	root	20	0	0	0	0	S	0	0.0	0:00.01	kworker/0:0
+	5054	rob	20	0	17468	1352	956	R	0	0.0	0:00.00	top
+	5055	rob	20	0	26048	832	716	S	0	0.0	0:00.00	sort
+	6110	rob	20	0	46256	2292	1792	S	0	0.0	0:00.07	gvfsd-metadata
+	6487	rob	20	0	211m	4368	3624	S	0	0.1	0:00.02	gvfsd-network
+	6490	rob	20	0	369m	7844	6204	S	0	0.1	0:00.10	gvfsd-smb-brows
+	6496	rob	20	0	60936	2760	2288	S	0	0.0	0:00.03	gvfsd-dnssd
+10880	rob	20	0	879m	31m	18m	S	0	0.4	2:40.42	rapidsvn
+12405	root	20	0	0	0	0	S	0	0.0	0:01.41	jbd2/sda3-8
+12406	root	0	-20	0	0	0	S	0	0.0	0:00.00	ext4-dio-unwrit
+14996	rob	20	0	2150m	98m	12m	S	4	1.2	4:47.74	dropbox
+16354	rob	20	0	522m	17m	11m	S	0	0.2	0:01.60	gnome-terminal
+16360	rob	20	0	14792	824	664	S	0	0.0	0:00.00	gnome-pty-helpe
+16361	rob	20	0	45160	4852	2072	S	0	0.1	0:00.07	zsh
+16383	rob	20	0	644m	11m	4808	S	0	0.1	0:00.11	node
+16902	rob	20	0	117m	6252	4008	S	0	0.1	1:05.03	VBoxXPCOMIPCD
+16907	rob	20	0	749m	14m	7948	S	0	0.2	2:59.17	VBoxSVC
+17715	rob	20	0	805m	95m	42m	S	0	1.2	4:35.65	chrome
+17722	rob	20	0	268m	8564	2660	S	0	0.1	0:00.39	chrome
+17724	rob	20	0	6464	392	308	S	0	0.0	0:00.00	chrome-sandbox
+17725	rob	20	0	323m	29m	17m	S	0	0.4	0:00.68	chrome
+17729	rob	20	0	127m	4380	3216	S	0	0.1	0:00.00	nacl_helper
+17731	rob	20	0	331m	13m	944	S	0	0.2	0:00.01	chrome
+17757	rob	20	0	957m	65m	23m	S	0	0.8	0:13.49	chrome
+17812	rob	20	0	1454m	215m	27m	S	0	2.7	73:28.61	chrome
+17972	rob	20	0	258m	5728	4600	S	0	0.1	0:00.24	gnome-settings-
+18507	rob	20	0	928m	41m	19m	S	0	0.5	0:03.87	chrome
+18812	rob	20	0	931m	53m	22m	S	0	0.7	0:10.16	chrome
+19522	rob	20	0	951m	55m	19m	S	0	0.7	0:06.09	chrome
+19725	rob	20	0	2861m	1.2g	1.1g	S	0	15.1	31:13.88	VirtualBox
+20732	rob	20	0	902m	223m	37m	S	0	2.8	1:26.48	thunderbird
+22043	rob	20	0	48148	5920	2284	S	0	0.1	0:00.45	zsh
+22453	rob	20	0	16536	1204	1016	S	0	0.0	0:00.00	subl
+22456	rob	20	0	2617m	559m	25m	S	0	7.0	5:03.42	sublime_text
+24654	rob	20	0	1139m	179m	22m	S	0	2.3	1:40.02	chrome

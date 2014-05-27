@@ -14,7 +14,7 @@ window.onload = function onLoad(){
                 );
             }
             return datesRange.sort();
-        };
+        },
         
         data = randomDates(
             new Date("01/01/2004"),
@@ -22,13 +22,13 @@ window.onload = function onLoad(){
             Math.random() * 45 + 5
         ),
         
-        x = d3.time.scale.utc()
-            .domain([new Date("01-01-2004"), new Date("12-01-2014")])
+        xScale = d3.time.scale.utc()
+            .domain([d3.min(data), d3.max(data)])
             .range([10, 790]),
         
         // Let's add the X axis
         xAxis = d3.svg.axis()
-            .scale(x)
+            .scale(xScale)
             .orient('bottom'),
 
         versionPicker = d3.select('.version-picker')
@@ -36,28 +36,40 @@ window.onload = function onLoad(){
             .attr("width", "100%")
             .attr("height", 100);
 
-        versionPicker.append("line")
-            .attr("x1", "0")
-            .attr("y1", "50")
-            .attr("x2", "100%")
-            .attr("y2", "50")
-            .attr("stroke", "#000")
-            .attr("stroke-width", "1");
-        
-        versionPicker
-            .selectAll('circle')
-            .data(data)
-            .enter().append('circle')
-            .attr("cx", function csFn(d){
-                return x(d);
-            })
-            .attr("cy", 50)
-            .attr("r", 5)
-            .attr("fill", "#D6C9C9")
-            .attr("stroke", "#980606")
-            .append("title")
-            .text(function textFn(d){
-                return d;
-            })
-            ;
+    versionPicker.append("line")
+        .attr("x1", "0")
+        .attr("y1", "50")
+        .attr("x2", "100%")
+        .attr("y2", "50")
+        .attr("stroke", "#000")
+        .attr("stroke-width", "1");
+    
+    versionPicker.selectAll('circle')
+        .data(data)
+        .enter().append('circle')
+        .attr("cx", function csFn(d){
+            return xScale(d);
+        })
+        .attr("cy", 50)
+        .attr("r", 5)
+        .attr("fill", "#D6C9C9")
+        .attr("stroke", "#980606")
+        .on("click", function clickFn(d){
+            console.log(d);
+            d3.selectAll("circle")
+                .attr("r", 5)
+                .attr("fill", "#D6C9C9");
+            d3.select(d3.event.toElement)
+                .attr("r", 10)
+                .attr("fill", "#D7CF39");
+        })
+        .append("title")
+        .text(function textFn(d){
+            return d;
+        });
+
+    versionPicker.append("g")
+        .attr("class", "axis")
+        .call(xAxis)
+        .attr("transform", "translate(0," + 78 + ")");
 };

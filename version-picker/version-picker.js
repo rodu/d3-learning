@@ -2,7 +2,7 @@
 window.onload = function onLoad(){
     var
         RANGE_MIN = new Date("01/01/2004"),
-        RANGE_MAX = new Date("31/12/2014"),
+        RANGE_MAX = new Date("12/31/2014"),
         randomDates = function randomDates(minDate, maxDate, numEntries) {
             var min = minDate.getTime(),
             max = maxDate.getTime(),
@@ -17,8 +17,8 @@ window.onload = function onLoad(){
         },
         
         data = randomDates(
-            new Date("01/01/2004"),
-            new Date("12/31/2014"),
+            RANGE_MIN,
+            RANGE_MAX,
             Math.random() * 45 + 5
         ),
         

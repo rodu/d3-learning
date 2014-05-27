@@ -48,7 +48,7 @@ window.onload = function onLoad(){
         .data(data)
         .enter().append('circle')
         .attr("cx", function csFn(d){
-            return xScale(d);
+            return ((xScale(d) / 800) * 100) + "%";
         })
         .attr("cy", 50)
         .attr("r", 5)

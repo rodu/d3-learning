@@ -53,6 +53,28 @@ window.onload = function onLoad(){
                 return ((xScale(d) / visWidth) * 100) + "%";
             },
 
+            appendCircles = function appendCircles(selectionFn){
+                selectionFn().append('circle')
+                    .attr("cx", cxFn)
+                    .attr("cy", 50)
+                    .attr("r", 5)
+                    .attr("fill", "#D6C9C9")
+                    .attr("stroke", "#980606")
+                    .on("click", function clickFn(d){
+                        console.log(d);
+                        d3.selectAll("circle")
+                            .attr("r", 5)
+                            .attr("fill", "#D6C9C9");
+                        d3.select(d3.event.toElement)
+                            .attr("r", 10)
+                            .attr("fill", "#D7CF39");
+                    })
+                    .append("title")
+                    .text(function textFn(d){
+                        return d;
+                    });
+            },
+
             zoomHandler = (function zoomHandler(){
                 var
                     MAX_ZOOMS = 4,
@@ -113,13 +135,10 @@ window.onload = function onLoad(){
                         .attr("cx", cxFn);
 
                     // Adds back missing circles on zooming out
-                    circles.enter().append('circle')
-                        .attr("cx", cxFn)
-                        .attr("cy", 50)
-                        .attr("r", 5)
-                        .attr("fill", "#D6C9C9")
-                        .attr("stroke", "#980606");
-
+                    appendCircles(function selectionFn(){
+                        return circles.enter();
+                    });
+                    
                     // Removes the circles out of new range
                     circles.exit()
                         /*.transition()
@@ -151,28 +170,12 @@ window.onload = function onLoad(){
             .attr("stroke", "#000")
             .attr("stroke-width", "1");
         
-        svg.selectAll('circle')
-            .data(data, keyFn)
-            .enter().append('circle')
-            .attr("cx", cxFn)
-            .attr("cy", 50)
-            .attr("r", 5)
-            .attr("fill", "#D6C9C9")
-            .attr("stroke", "#980606")
-            .on("click", function clickFn(d){
-                console.log(d);
-                d3.selectAll("circle")
-                    .attr("r", 5)
-                    .attr("fill", "#D6C9C9");
-                d3.select(d3.event.toElement)
-                    .attr("r", 10)
-                    .attr("fill", "#D7CF39");
-            })
-            .append("title")
-            .text(function textFn(d){
-                return d;
-            });
-
+        appendCircles(function selectionFn(){
+            return svg.selectAll('circle')
+                .data(data, keyFn)
+                .enter();
+        });
+        
         svg.append("g")
             .attr("class", "axis")
             .call(xAxis)

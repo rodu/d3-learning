@@ -47,9 +47,9 @@ window.onload = function onLoad(){
         .attr("height", 100);
 
     versionPicker.append("line")
-        .attr("x1", "0")
+        .attr("x1", xScale(d3.min(data)))
         .attr("y1", "50")
-        .attr("x2", "100%")
+        .attr("x2", xScale(d3.max(data)))
         .attr("y2", "50")
         .attr("stroke", "#000")
         .attr("stroke-width", "1");

@@ -18,6 +18,7 @@ window.onload = function onLoad(){
             return datesRange.sort();
         },
         
+        
         data = randomDates(
             RANGE_MIN,
             RANGE_MAX,
@@ -31,7 +32,15 @@ window.onload = function onLoad(){
         // Let's add the X axis
         xAxis = d3.svg.axis()
             .scale(xScale)
-            .orient('bottom');
+            .orient('bottom'),
+
+        keyFn = function keyFn(d){
+            return +d;
+        },
+
+        cxFn = function cxFn(d){
+            return ((xScale(+d) / vis.node().offsetWidth) * 100) + "%";
+        };
 
     versionPicker = vis.append("svg")
         .attr("width", "100%")
@@ -46,11 +55,9 @@ window.onload = function onLoad(){
         .attr("stroke-width", "1");
     
     versionPicker.selectAll('circle')
-        .data(data)
+        .data(data, keyFn)
         .enter().append('circle')
-        .attr("cx", function csFn(d){
-            return ((xScale(d) / 800) * 100) + "%";
-        })
+        .attr("cx", cxFn)
         .attr("cy", 50)
         .attr("r", 5)
         .attr("fill", "#D6C9C9")
@@ -80,6 +87,44 @@ window.onload = function onLoad(){
             event.stopPropagation();
         }
         xScale.range([MARGINS, vis.node().offsetWidth - MARGINS]);
+        versionPicker.select(".axis")
+            .call(xAxis);
+    });
+
+    // Simulating a zoom-in
+    versionPicker.on("click", function(){
+        var zoomedData = [],
+            minRangeDate = new Date("01/01/2010"),
+            maxRangeDate = new Date("12/31/2012"),
+            minRangeNum = (+minRangeDate),
+            maxRangeNum = (+maxRangeDate),
+            circles;
+        
+        // Change the data domain to the zoomed in region
+        xScale.domain([minRangeDate, maxRangeDate]);
+        
+        // Updates the dataset
+        data.forEach(function forEachFn(d){
+            var mills = (+d);
+            if (mills >= minRangeNum && mills <= maxRangeNum){
+                zoomedData.push(new Date(d));
+            }
+        });
+        
+        // Applies the zoomed data set and gets reference to circles
+        circles = versionPicker.selectAll("circle")
+            .data(zoomedData, keyFn);
+        
+        // Updates the position of the circles in rage
+        circles.transition()
+            .duration(500)
+            .attr("cx", cxFn);
+
+        // Removes the circles out of new range
+        circles.exit()
+            .remove();
+
+        // Updates the axis
         versionPicker.select(".axis")
             .call(xAxis);
     });

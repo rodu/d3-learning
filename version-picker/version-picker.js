@@ -3,6 +3,8 @@ window.onload = function onLoad(){
     var
         RANGE_MIN = new Date("01/01/2004"),
         RANGE_MAX = new Date("12/31/2014"),
+        MARGINS = 10,
+        vis = d3.select('.version-picker'),
         randomDates = function randomDates(minDate, maxDate, numEntries) {
             var min = minDate.getTime(),
             max = maxDate.getTime(),
@@ -24,17 +26,16 @@ window.onload = function onLoad(){
         
         xScale = d3.time.scale.utc()
             .domain([d3.min(data), d3.max(data)])
-            .range([10, 790]),
+            .range([MARGINS, vis.node().offsetWidth - MARGINS]),
         
         // Let's add the X axis
         xAxis = d3.svg.axis()
             .scale(xScale)
-            .orient('bottom'),
+            .orient('bottom');
 
-        versionPicker = d3.select('.version-picker')
-            .append("svg")
-            .attr("width", "100%")
-            .attr("height", 100);
+    versionPicker = vis.append("svg")
+        .attr("width", "100%")
+        .attr("height", 100);
 
     versionPicker.append("line")
         .attr("x1", "0")
@@ -72,4 +73,14 @@ window.onload = function onLoad(){
         .attr("class", "axis")
         .call(xAxis)
         .attr("transform", "translate(0," + 78 + ")");
+
+    // Implement resize handlers to update static parts
+    window.addEventListener("resize", function resizeListener(event){
+        if (event.stopPropagation){
+            event.stopPropagation();
+        }
+        xScale.range([MARGINS, vis.node().offsetWidth - MARGINS]);
+        versionPicker.select(".axis")
+            .call(xAxis);
+    });
 };

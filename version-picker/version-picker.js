@@ -11,6 +11,7 @@ window.onload = function onLoad(){
             CIRCLE_RAY = 5,
             CIRCLE_SELECTED_RAY = 10,
             CIRCLE_FILL = '#D6C9C9',
+            CIRCLE_MASTER_FILL = '#CF5151',
             CIRCLE_SELECTED_FILL = '#EDECB2',
             vis = d3.select('.version-picker'),
             visWidth = vis.node().offsetWidth,
@@ -49,8 +50,8 @@ window.onload = function onLoad(){
                 .scale(xScale)
                 .orient('bottom'),
 
-            /* Receives a value representing the coordinate on the X, and maps that
-            to a Date corresponding to the visualization xScale.
+            /* Receives a value representing the coordinate on the X, and maps
+            that to a Date corresponding to the visualization xScale.
              */
             xToDate = function xToDate(xScale, x){
                 if (typeof xScale === 'function'){
@@ -80,26 +81,21 @@ window.onload = function onLoad(){
 
                         // Reset previously selected master
                         if (master){
-                            master
-                                /*.filter(function filterFn(d){
-                                    return d.master;
-                                })*/
-                                .datum(function datumFn(d){
-                                    d.master = false;
+                            master.datum(function datumFn(d){
+                                    d.isMaster = false;
+                                    return d;
                                 })
                                 .attr('r', CIRCLE_RAY)
                                 .attr('fill', CIRCLE_FILL);
                         }
                         
                         // Sets the properties for this circle to be the master
-                        console.log("data", el.datum());
-                        
-                            /*.datum(function datumFn(d){
-                                d.master = true;
-                                console.log(d);
-                            })
-                            .attr('r', CIRCLE_SELECTED_RAY)
-                            .attr('fill', CIRCLE_SELECTED_FILL);*/
+                        el.datum(function datumFn(d){
+                            d.isMaster = true;
+                            return d;
+                        })
+                        .attr('r', CIRCLE_SELECTED_RAY)
+                        .attr('fill', CIRCLE_MASTER_FILL);
 
                         // Stores reference to current master
                         master = d3.select(this);
@@ -214,58 +210,74 @@ window.onload = function onLoad(){
         
         indicatorDate = svg.append('text');
         // Handles movement of indicator line
-        svg.on('mousemove', function(){
-            var clientX = d3.event.clientX - 10,
-                mouseSpot = xScale.invert(clientX),
-                dSpot = 0,
-                dataMatches = function dataMatches(){
-                    var
-                        rayGap = CIRCLE_RAY / 2,
-                        min = clientX - rayGap,
-                        max = clientX + rayGap;
-                    return data.some(function someFn(d){
-                        var dRange = xScale(d.date);
-                        if (dRange <= max && dRange >= min){
-                            dSpot = dRange;
-                            return true;
-                        }
-                    });
-                };
-            indicatorLine.attr('transform', 'translate(' + clientX + ', 0)');
-            // Shows the date corresponding to the current bullet
-            /*if (dataMatches()){
-                indicatorDate
-                    .attr('opacity', 1)
-                    .attr('transform', 'translate(' + clientX + ',' + 20 + ')')
-                    .text(xScale.invert(dSpot));
-                svg.selectAll("circle")
-                    .filter(function filterFn(d){
-                        return xScale(d.date) === dSpot;
-                    })
-                    .attr('fill', CIRCLE_SELECTED_FILL)
-                    .attr('r', CIRCLE_SELECTED_RAY);
-            }
-            else {
-                svg.selectAll("circle")
-                    .filter(function filterFn(){
-                        var el = d3.select(this),
-                            isMaster = function isMaster(){
-                                return el.datum(function datumFn(d){
-                                        return !d.master;
-                                    });
-                            },
-                            isHighlighted = function isHighlighted(){
-                                return el.attr('r') === CIRCLE_SELECTED_RAY;
-                            };
-                        return !isMaster() && isHighlighted();
-                    })
-                    .attr('fill', CIRCLE_FILL)
-                    .attr('r', CIRCLE_RAY);
+        (function mouseMovement(){
+            var
+                lastDSpot = 0,
+                isTooltipShown = false;
+            svg.on('mousemove', function(){
+                var clientX = d3.event.clientX - 10,
+                    mouseSpot = xScale.invert(clientX),
+                    dSpot = 0,
+                    dataMatches = function dataMatches(){
+                        var
+                            rayGap = CIRCLE_RAY / 2,
+                            min = clientX - rayGap,
+                            max = clientX + rayGap;
+                        return data.some(function someFn(d){
+                            var dRange = xScale(d.date);
+                            if (dRange <= max && dRange >= min){
+                                dSpot = dRange;
+                                return true;
+                            }
+                        });
+                    };
+                indicatorLine.attr('transform',
+                    'translate(' + clientX + ', 0)');
+                // Shows the date corresponding to the current bullet
+                if (dataMatches()){
+                    if (dSpot !== lastDSpot){
+                        lastDSpot = dSpot;
+                        indicatorDate.attr('opacity', 1)
+                            .attr('transform',
+                                'translate(' + clientX + ',' + 20 + ')')
+                            .text(xScale.invert(dSpot));
+                        svg.selectAll("circle")
+                            .filter(function filterFn(d){
+                                return xScale(d.date) === dSpot;
+                            })
+                            .datum(function datumFn(d){
+                                d.isHighlighted = true;
+                                return d;
+                            })
+                            .attr('fill', function fillFn(d){
+                                return d.isMaster ?
+                                    CIRCLE_MASTER_FILL : CIRCLE_SELECTED_FILL;
+                            })
+                            .attr('r', CIRCLE_SELECTED_RAY);
+                        isTooltipShown = true;
+                    }
+                }
+                else {
+                    if (isTooltipShown){
+                        svg.selectAll("circle")
+                            .filter(function filterFn(d){
+                                return d.isHighlighted && !d.isMaster;
+                            })
+                            .datum(function datumFn(d){
+                                d.isHighlighted = false;
+                                return d;
+                            })
+                            .attr('fill', CIRCLE_FILL)
+                            .attr('r', CIRCLE_RAY);
 
-                // Hides the date tooltip
-                indicatorDate.attr('opacity', 0);
-            }*/
-        });
+                        // Hides the date tooltip
+                        indicatorDate.attr('opacity', 0);
+                        isTooltipShown = false;
+                        lastDSpot = 0;
+                    }
+                }
+            });
+        }());
         
         appendCircles(function selectionFn(){
             return svg.selectAll('circle')

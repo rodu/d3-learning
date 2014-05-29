@@ -5,14 +5,15 @@ window.onload = function onLoad(){
         var
             RANGE_MIN = new Date('01/01/2004'),
             RANGE_MAX = new Date('12/31/2014'),
-            master,
-            compare,
+            elMaster,
+            elCompare,
             MARGINS = 10,
             CIRCLE_RAY = 5,
             CIRCLE_SELECTED_RAY = 10,
             CIRCLE_FILL = '#D6C9C9',
             CIRCLE_MASTER_FILL = '#CF5151',
             CIRCLE_SELECTED_FILL = '#EDECB2',
+            MAX_ZOOM_LEVELS = 5,
             vis = d3.select('.version-picker'),
             visWidth = vis.node().offsetWidth,
             visHeight = vis.node().offsetHeight,
@@ -60,7 +61,7 @@ window.onload = function onLoad(){
             },
 
             keyFn = function keyFn(d){
-                return +d.date;
+                return d ? +d.date : void(0);
             },
 
             cxFn = function cxFn(d){
@@ -77,11 +78,9 @@ window.onload = function onLoad(){
                     .attr('data-selected', 'false')
                     .on('click', function clickFn(d){
                         var el = d3.select(this);
-                        //console.log(d);
-
-                        // Reset previously selected master
-                        if (master){
-                            master.datum(function datumFn(d){
+                        // Reset previously selected elMaster
+                        if (elMaster){
+                            elMaster.datum(function datumFn(d){
                                     d.isMaster = false;
                                     return d;
                                 })
@@ -89,7 +88,8 @@ window.onload = function onLoad(){
                                 .attr('fill', CIRCLE_FILL);
                         }
                         
-                        // Sets the properties for this circle to be the master
+                        // Sets the properties for this circle to be the
+                        // elMaster
                         el.datum(function datumFn(d){
                             d.isMaster = true;
                             return d;
@@ -97,18 +97,13 @@ window.onload = function onLoad(){
                         .attr('r', CIRCLE_SELECTED_RAY)
                         .attr('fill', CIRCLE_MASTER_FILL);
 
-                        // Stores reference to current master
-                        master = d3.select(this);
-                    })
-                    .append('title')
-                    .text(function textFn(d){
-                        return d.date;
+                        // Stores reference to current elMaster
+                        elMaster = d3.select(this);
                     });
             },
 
             zoomHandler = (function zoomHandler(){
                 var
-                    MAX_ZOOMS = 4,
                     zoomings = [];
                 return function zoomHandlerClosure(factor){
                     var
@@ -122,7 +117,7 @@ window.onload = function onLoad(){
                         maxRangeDate,
                         isZoomIn = factor > 0;
 
-                    if (isZoomIn && zoomings.length > MAX_ZOOMS){
+                    if (isZoomIn && zoomings.length >= MAX_ZOOM_LEVELS){
                         return;
                     }
                     if (!isZoomIn && zoomings.length === 0){
@@ -217,7 +212,8 @@ window.onload = function onLoad(){
             svg.on('mousemove', function(){
                 var clientX = d3.event.clientX - 10,
                     mouseSpot = xScale.invert(clientX),
-                    dSpot = 0,
+                    dSpot,
+                    elSpot,
                     dataMatches = function dataMatches(){
                         var
                             rayGap = CIRCLE_RAY / 2,
@@ -226,7 +222,7 @@ window.onload = function onLoad(){
                         return data.some(function someFn(d){
                             var dRange = xScale(d.date);
                             if (dRange <= max && dRange >= min){
-                                dSpot = dRange;
+                                dSpot = d;
                                 return true;
                             }
                         });
@@ -235,15 +231,17 @@ window.onload = function onLoad(){
                     'translate(' + clientX + ', 0)');
                 // Shows the date corresponding to the current bullet
                 if (dataMatches()){
-                    if (dSpot !== lastDSpot){
+                    if (keyFn(dSpot) !== keyFn(lastDSpot)){
                         lastDSpot = dSpot;
+                        // Shows the date of the current spot the mouse is over
                         indicatorDate.attr('opacity', 1)
                             .attr('transform',
                                 'translate(' + clientX + ',' + 20 + ')')
-                            .text(xScale.invert(dSpot));
-                        svg.selectAll("circle")
+                            .text(dSpot.date);
+                        
+                        elSpot = svg.selectAll('circle')
                             .filter(function filterFn(d){
-                                return xScale(d.date) === dSpot;
+                                return xScale(d.date) === xScale(dSpot.date);
                             })
                             .datum(function datumFn(d){
                                 d.isHighlighted = true;
@@ -254,12 +252,28 @@ window.onload = function onLoad(){
                                     CIRCLE_MASTER_FILL : CIRCLE_SELECTED_FILL;
                             })
                             .attr('r', CIRCLE_SELECTED_RAY);
+                        
+                        // Shows the compare flag on items to be compared
+                        if (elMaster && !dSpot.isMaster){
+                            svg.append('rect')
+                                .attr('class', 'compare-rect')
+                                .attr('x', xScale(dSpot.date) - 20)
+                                .attr('y', 65)
+                                .attr('width', 40)
+                                .attr('height', 20)
+                                .attr('fill', '#DFD6D6')
+                                .on('click', function(){
+                                    console.log('compare');
+                                    elCompare = elSpot;
+                                    
+                                });
+                        }
                         isTooltipShown = true;
                     }
                 }
                 else {
                     if (isTooltipShown){
-                        svg.selectAll("circle")
+                        svg.selectAll('circle')
                             .filter(function filterFn(d){
                                 return d.isHighlighted && !d.isMaster;
                             })
@@ -269,7 +283,8 @@ window.onload = function onLoad(){
                             })
                             .attr('fill', CIRCLE_FILL)
                             .attr('r', CIRCLE_RAY);
-
+                        
+                        svg.selectAll('rect.compare-rect').remove();
                         // Hides the date tooltip
                         indicatorDate.attr('opacity', 0);
                         isTooltipShown = false;

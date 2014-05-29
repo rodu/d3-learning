@@ -6,7 +6,8 @@ window.onload = function onLoad(){
             RANGE_MIN = new Date('01/01/2004'),
             RANGE_MAX = new Date('12/31/2014'),
             elMaster,
-            elCompare,
+            elCompared,
+            elCompareTooltip,
             MARGINS = 10,
             CIRCLE_RAY = 5,
             CIRCLE_SELECTED_RAY = 10,
@@ -73,10 +74,12 @@ window.onload = function onLoad(){
                     .attr('cx', cxFn)
                     .attr('cy', 50)
                     .attr('r', function rFn(d){
-                        return d.isMaster ? CIRCLE_SELECTED_RAY : CIRCLE_RAY;
+                        return d.isMaster || d.isCompared ?
+                            CIRCLE_SELECTED_RAY : CIRCLE_RAY;
                     })
                     .attr('fill', function fillFn(d){
-                        return d.isMaster ? CIRCLE_MASTER_FILL : CIRCLE_FILL;
+                        return d.isMaster ? CIRCLE_MASTER_FILL :
+                            d.isCompared ? CIRCLE_SELECTED_FILL : CIRCLE_FILL;
                     })
                     .attr('stroke', '#980606')
                     .attr('data-selected', 'false')
@@ -85,24 +88,32 @@ window.onload = function onLoad(){
                         // Reset previously selected elMaster
                         if (elMaster){
                             elMaster.datum(function datumFn(d){
-                                    d.isMaster = false;
-                                    return d;
-                                })
-                                .attr('r', CIRCLE_RAY)
-                                .attr('fill', CIRCLE_FILL);
+                                return d.isMaster = false, d;
+                            })
+                            .attr('r', CIRCLE_RAY)
+                            .attr('fill', CIRCLE_FILL);
                         }
-                        
                         // Sets the properties for this circle to be the
                         // elMaster
                         el.datum(function datumFn(d){
-                            d.isMaster = true;
-                            return d;
+                            return d.isMaster = true, d;
                         })
                         .attr('r', CIRCLE_SELECTED_RAY)
                         .attr('fill', CIRCLE_MASTER_FILL);
 
                         // Stores reference to current elMaster
                         elMaster = d3.select(this);
+                        if (elCompared){
+                            elCompared.datum(function datumFn(d){
+                                return d.isCompared = void(0), d;
+                            })
+                            .attr('r', CIRCLE_RAY)
+                            .attr('fill', CIRCLE_FILL);
+                        }
+                        if (elCompareTooltip){
+                            elCompareTooltip.remove();
+                        }
+                        elCompared = elCompareTooltip = void(0);
                     });
             },
 
@@ -248,8 +259,7 @@ window.onload = function onLoad(){
                                 return xScale(d.date) === xScale(dSpot.date);
                             })
                             .datum(function datumFn(d){
-                                d.isHighlighted = true;
-                                return d;
+                                return d.isHighlighted = true, d;
                             })
                             .attr('fill', function fillFn(d){
                                 return d.isMaster ?
@@ -258,8 +268,8 @@ window.onload = function onLoad(){
                             .attr('r', CIRCLE_SELECTED_RAY);
                         
                         // Shows the compare flag on items to be compared
-                        if (elMaster && !dSpot.isMaster){
-                            svg.append('rect')
+                        if (elMaster && !dSpot.isMaster && !dSpot.isCompared){
+                            elCompareTooltip = svg.append('rect')
                                 .attr('class', 'compare-rect')
                                 .attr('x', xScale(dSpot.date) - 20)
                                 .attr('y', 65)
@@ -267,9 +277,26 @@ window.onload = function onLoad(){
                                 .attr('height', 20)
                                 .attr('fill', '#DFD6D6')
                                 .on('click', function(){
-                                    console.log('compare');
-                                    elCompare = elSpot;
-
+                                    if (elCompared){ // resets previous compared
+                                        elCompared.attr('r', CIRCLE_RAY)
+                                            .attr('fill', CIRCLE_FILL)
+                                            .datum(function datumFn(d){
+                                                return d.isCompared = void(0),
+                                                    d;
+                                            });
+                                    }
+                                    (elCompared = elSpot).datum(
+                                        function datumFn(d){
+                                            return d.isCompared = true, d;
+                                        })
+                                        .attr('fill', CIRCLE_SELECTED_FILL)
+                                        .attr('r', CIRCLE_SELECTED_RAY);
+                                    console.log(
+                                        'compares',
+                                        elMaster.datum(),
+                                        'with',
+                                        elSpot.datum()
+                                    );
                                 });
                         }
                         isTooltipShown = true;
@@ -279,11 +306,11 @@ window.onload = function onLoad(){
                     if (isTooltipShown){
                         svg.selectAll('circle')
                             .filter(function filterFn(d){
-                                return d.isHighlighted && !d.isMaster;
+                                return d.isHighlighted &&
+                                    !d.isMaster && !d.isCompared;
                             })
                             .datum(function datumFn(d){
-                                d.isHighlighted = false;
-                                return d;
+                                return d.isHighlighted = false, d;
                             })
                             .attr('fill', CIRCLE_FILL)
                             .attr('r', CIRCLE_RAY);

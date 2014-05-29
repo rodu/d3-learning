@@ -72,8 +72,12 @@ window.onload = function onLoad(){
                 selectionFn().append('circle')
                     .attr('cx', cxFn)
                     .attr('cy', 50)
-                    .attr('r', CIRCLE_RAY)
-                    .attr('fill', CIRCLE_FILL)
+                    .attr('r', function rFn(d){
+                        return d.isMaster ? CIRCLE_SELECTED_RAY : CIRCLE_RAY;
+                    })
+                    .attr('fill', function fillFn(d){
+                        return d.isMaster ? CIRCLE_MASTER_FILL : CIRCLE_FILL;
+                    })
                     .attr('stroke', '#980606')
                     .attr('data-selected', 'false')
                     .on('click', function clickFn(d){
@@ -265,7 +269,7 @@ window.onload = function onLoad(){
                                 .on('click', function(){
                                     console.log('compare');
                                     elCompare = elSpot;
-                                    
+
                                 });
                         }
                         isTooltipShown = true;

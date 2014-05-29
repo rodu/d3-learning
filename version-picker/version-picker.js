@@ -65,12 +65,15 @@ window.onload = function onLoad(){
                     .attr('r', CIRCLE_RAY)
                     .attr('fill', CIRCLE_FILL)
                     .attr('stroke', '#980606')
+                    .attr('data-selected', 'false')
                     .on('click', function clickFn(d){
                         console.log(d);
                         d3.selectAll('circle')
+                            .attr('data-selected', 'false')
                             .attr('r', CIRCLE_RAY)
                             .attr('fill', CIRCLE_FILL);
                         d3.select(d3.event.toElement)
+                            .attr('data-selected', 'true')
                             .attr('r', CIRCLE_SELECTED_RAY)
                             .attr('fill', CIRCLE_SELECTED_FILL);
                     })
@@ -215,6 +218,9 @@ window.onload = function onLoad(){
             }
             else {
                 svg.selectAll("circle")
+                    .filter(function filterFn(d){
+                        return d3.select(this).attr("data-selected") === "false";
+                    })
                     .attr('fill', CIRCLE_FILL)
                     .attr('r', CIRCLE_RAY);
                 indicatorDate.attr('opacity', 0);

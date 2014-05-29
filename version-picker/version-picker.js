@@ -3,7 +3,7 @@ window.onload = function onLoad(){
     'use strict';
     var
         CANVAS_WIDTH = '100%',
-        CANVAS_HEIGHT = 100,
+        CANVAS_HEIGHT = 120,
         RANGE_MIN = new Date('01/01/2004'),
         RANGE_MAX = new Date('12/31/2014'),
         MARGINS = 10,
@@ -71,9 +71,10 @@ window.onload = function onLoad(){
         },
 
         appendCircles = function appendCircles(selectionFn){
+            var cy = CANVAS_HEIGHT / 2;
             selectionFn().append('circle')
                 .attr('cx', cxFn)
-                .attr('cy', 50)
+                .attr('cy', cy)
                 .attr('r', function rFn(d){
                     return d.isMaster || d.isCompared ?
                         CIRCLE_SELECTED_RAY : CIRCLE_RAY;
@@ -215,7 +216,7 @@ window.onload = function onLoad(){
         .attr('x1', 0)
         .attr('y1', 0)
         .attr('x2', 0)
-        .attr('y2', visHeight)
+        .attr('y2', CANVAS_HEIGHT)
         .attr('stroke', '#000')
         .attr('stroke-width', '1');
     
@@ -270,10 +271,12 @@ window.onload = function onLoad(){
                     
                     // Shows the compare flag on items to be compared
                     if (elMaster && !dSpot.isMaster && !dSpot.isCompared){
+                        console.log(typeof elSpot.attr('cy'), elSpot.attr('r'));
                         elCompareTooltip = svg.append('rect')
                             .attr('class', 'compare-rect')
                             .attr('x', xScale(dSpot.date) - 20)
-                            .attr('y', 65)
+                            .attr('y',
+                                (+elSpot.attr('cy')) + (+elSpot.attr('r')) + 5)
                             .attr('width', 40)
                             .attr('height', 20)
                             .attr('fill', '#DFD6D6')
@@ -332,10 +335,11 @@ window.onload = function onLoad(){
             .enter();
     });
     
+    // Adds axis with relative marks
     svg.append('g')
         .attr('class', 'axis')
         .call(xAxis)
-        .attr('transform', 'translate(0,' + 78 + ')');
+        .attr('transform', 'translate(0,' + (CANVAS_HEIGHT - 20) + ')');
 
     // Implement resize handlers to update static parts
     window.addEventListener('resize', function resizeListener(event){

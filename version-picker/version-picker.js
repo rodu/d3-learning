@@ -3,11 +3,10 @@ window.onload = function onLoad(){
     var exports;
     function versionPicker(){
         var
+            CANVAS_WIDTH = '100%',
+            CANVAS_HEIGHT = 100,
             RANGE_MIN = new Date('01/01/2004'),
             RANGE_MAX = new Date('12/31/2014'),
-            elMaster,
-            elCompared,
-            elCompareTooltip,
             MARGINS = 10,
             CIRCLE_RAY = 5,
             CIRCLE_SELECTED_RAY = 10,
@@ -15,6 +14,9 @@ window.onload = function onLoad(){
             CIRCLE_MASTER_FILL = '#CF5151',
             CIRCLE_SELECTED_FILL = '#EDECB2',
             MAX_ZOOM_LEVELS = 5,
+            elMaster,
+            elCompared,
+            elCompareTooltip,
             vis = d3.select('.version-picker'),
             visWidth = vis.node().offsetWidth,
             visHeight = vis.node().offsetHeight,
@@ -197,16 +199,16 @@ window.onload = function onLoad(){
             }()),
 
             svg = vis.append('svg')
-                .attr('width', '100%')
-                .attr('height', 100),
+                .attr('width', CANVAS_WIDTH)
+                .attr('height', CANVAS_HEIGHT),
             indicatorDate,
             indicatorLine;
-
+        // Adds horizontal line in middle of visualization
         svg.append('line')
             .attr('x1', xScale(d3.min(data, dateAccessor)))
-            .attr('y1', '50')
+            .attr('y1', CANVAS_HEIGHT / 2)
             .attr('x2', xScale(d3.max(data, dateAccessor)))
-            .attr('y2', '50')
+            .attr('y2', CANVAS_HEIGHT / 2)
             .attr('stroke', '#000')
             .attr('stroke-width', '1');
         // Adds vertical line following mouse cursor

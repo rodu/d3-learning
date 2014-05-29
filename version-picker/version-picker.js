@@ -3,11 +3,16 @@ window.onload = function onLoad(){
     var exports;
     function versionPicker(){
         var
-            RANGE_MIN = new Date("01/01/2004"),
-            RANGE_MAX = new Date("12/31/2014"),
+            RANGE_MIN = new Date('01/01/2004'),
+            RANGE_MAX = new Date('12/31/2014'),
             MARGINS = 10,
+            CIRCLE_RAY = 5,
+            CIRCLE_SELECTED_RAY = 10,
+            CIRCLE_FILL = '#D6C9C9',
+            CIRCLE_SELECTED_FILL = '#EDECB2',
             vis = d3.select('.version-picker'),
             visWidth = vis.node().offsetWidth,
+            visHeight = vis.node().offsetHeight,
             randomDates = function randomDates(minDate, maxDate, numEntries) {
                 var min = minDate.getTime(),
                 max = maxDate.getTime(),
@@ -40,7 +45,7 @@ window.onload = function onLoad(){
             to a Date corresponding to the visualization xScale.
              */
             xToDate = function xToDate(xScale, x){
-                if (typeof xScale === "function"){
+                if (typeof xScale === 'function'){
                     return xScale.invert(x);
                 }
             },
@@ -50,26 +55,26 @@ window.onload = function onLoad(){
             },
 
             cxFn = function cxFn(d){
-                return ((xScale(d) / visWidth) * 100) + "%";
+                return ((xScale(d) / visWidth) * 100) + '%';
             },
 
             appendCircles = function appendCircles(selectionFn){
                 selectionFn().append('circle')
-                    .attr("cx", cxFn)
-                    .attr("cy", 50)
-                    .attr("r", 5)
-                    .attr("fill", "#D6C9C9")
-                    .attr("stroke", "#980606")
-                    .on("click", function clickFn(d){
+                    .attr('cx', cxFn)
+                    .attr('cy', 50)
+                    .attr('r', CIRCLE_RAY)
+                    .attr('fill', CIRCLE_FILL)
+                    .attr('stroke', '#980606')
+                    .on('click', function clickFn(d){
                         console.log(d);
-                        d3.selectAll("circle")
-                            .attr("r", 5)
-                            .attr("fill", "#D6C9C9");
+                        d3.selectAll('circle')
+                            .attr('r', CIRCLE_RAY)
+                            .attr('fill', CIRCLE_FILL);
                         d3.select(d3.event.toElement)
-                            .attr("r", 10)
-                            .attr("fill", "#D7CF39");
+                            .attr('r', CIRCLE_SELECTED_RAY)
+                            .attr('fill', CIRCLE_SELECTED_FILL);
                     })
-                    .append("title")
+                    .append('title')
                     .text(function textFn(d){
                         return d;
                     });
@@ -132,10 +137,10 @@ window.onload = function onLoad(){
                     }
                     
                     // Applies the zoomed data set and gets reference to circles
-                    circles = svg.selectAll("circle").data(zoomedData, keyFn);
+                    circles = svg.selectAll('circle').data(zoomedData, keyFn);
                     
                     // Updates the position of the circles in rage
-                    circles.transition().duration(500).attr("cx", cxFn);
+                    circles.transition().duration(500).attr('cx', cxFn);
 
                     if (isZoomIn){
                         // Removes the circles out of new range
@@ -149,21 +154,72 @@ window.onload = function onLoad(){
                     }
 
                     // Updates the axis
-                    svg.select(".axis").call(xAxis);
+                    svg.select('.axis').call(xAxis);
                 };
             }()),
 
-            svg = vis.append("svg")
-                .attr("width", "100%")
-                .attr("height", 100);
+            svg = vis.append('svg')
+                .attr('width', '100%')
+                .attr('height', 100),
+            indicatorDate,
+            indicatorLine;
 
-        svg.append("line")
-            .attr("x1", xScale(d3.min(data)))
-            .attr("y1", "50")
-            .attr("x2", xScale(d3.max(data)))
-            .attr("y2", "50")
-            .attr("stroke", "#000")
-            .attr("stroke-width", "1");
+        svg.append('line')
+            .attr('x1', xScale(d3.min(data)))
+            .attr('y1', '50')
+            .attr('x2', xScale(d3.max(data)))
+            .attr('y2', '50')
+            .attr('stroke', '#000')
+            .attr('stroke-width', '1');
+        // Adds vertical line following mouse cursor
+        indicatorLine = svg.append('line')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 0)
+            .attr('y2', visHeight)
+            .attr('stroke', '#000')
+            .attr('stroke-width', '1');
+        
+        indicatorDate = svg.append('text');
+        // Handles movement of indicator line
+        svg.on('mousemove', function(){
+            var clientX = d3.event.clientX - 10,
+                mouseSpot = xScale.invert(clientX),
+                dSpot = 0,
+                dataMatches = function dataMatches(){
+                    var
+                        rayGap = CIRCLE_RAY / 2,
+                        min = clientX - rayGap,
+                        max = clientX + rayGap;
+                    return data.some(function someFn(d){
+                        var dRange = xScale(d);
+                        if (dRange <= max && dRange >= min){
+                            dSpot = dRange;
+                            return true;
+                        }
+                    });
+                };
+            indicatorLine.attr('transform', 'translate(' + clientX + ', 0)');
+            // Shows the date corresponding to the current bullet
+            if (dataMatches()){
+                indicatorDate
+                    .attr('opacity', 1)
+                    .attr('transform', 'translate(' + clientX + ',' + 20 + ')')
+                    .text(xScale.invert(dSpot));
+                svg.selectAll("circle")
+                    .filter(function filterFn(d){
+                        return xScale(d) === dSpot;
+                    })
+                    .attr('fill', CIRCLE_SELECTED_FILL)
+                    .attr('r', CIRCLE_SELECTED_RAY);
+            }
+            else {
+                svg.selectAll("circle")
+                    .attr('fill', CIRCLE_FILL)
+                    .attr('r', CIRCLE_RAY);
+                indicatorDate.attr('opacity', 0);
+            }
+        });
         
         appendCircles(function selectionFn(){
             return svg.selectAll('circle')
@@ -171,13 +227,13 @@ window.onload = function onLoad(){
                 .enter();
         });
         
-        svg.append("g")
-            .attr("class", "axis")
+        svg.append('g')
+            .attr('class', 'axis')
             .call(xAxis)
-            .attr("transform", "translate(0," + 78 + ")");
+            .attr('transform', 'translate(0,' + 78 + ')');
 
         // Implement resize handlers to update static parts
-        window.addEventListener("resize", function resizeListener(event){
+        window.addEventListener('resize', function resizeListener(event){
             if (event.stopPropagation){
                 event.stopPropagation();
             }
@@ -185,12 +241,12 @@ window.onload = function onLoad(){
             visWidth = vis.node().offsetWidth;
             
             xScale.range([MARGINS, visWidth - MARGINS]);
-            svg.select(".axis")
+            svg.select('.axis')
                 .call(xAxis);
         });
 
         // Attaches event for handling zoom in and out
-        svg.on("wheel", function(){
+        svg.on('wheel', function(){
             zoomHandler(d3.event.wheelDelta);
         });
 
@@ -207,25 +263,25 @@ window.onload = function onLoad(){
     (function tests(){
         var xToDate = exports.testing.xToDate,
             test = function test(assertion, message, context, args){
-                var result = (typeof assertion === "function" ?
+                var result = (typeof assertion === 'function' ?
                         assertion.apply(context, args) : {check: assertion});
                 console.log(
-                    result.check ? "Pass." : "## Fail! " +
-                        (typeof message === "function" ?
+                    result.check ? 'Pass.' : '## Fail! ' +
+                        (typeof message === 'function' ?
                             message(result) : message)
                 );
             };
 
         test(
             void(0) === xToDate(),
-            "Passing undefined should return undefined"
+            'Passing undefined should return undefined'
         );
 
         // Tests the xToDate
         (function firstLastScaleTest(){
             var
-                firstDate = new Date("01/01/2014"),
-                lastDate = new Date("01/02/2014"),
+                firstDate = new Date('01/01/2014'),
+                lastDate = new Date('01/02/2014'),
                 xScale = d3.time.scale.utc()
                     .domain([
                         firstDate,
@@ -244,7 +300,7 @@ window.onload = function onLoad(){
                     };
                 },
                 function (result){
-                    return "expected 01/01/2014 but was: " + result.value;
+                    return 'expected 01/01/2014 but was: ' + result.value;
                 }
             );
 
@@ -259,7 +315,7 @@ window.onload = function onLoad(){
                     };
                 },
                 function (result){
-                    return "expected 01/02/2014 but was: " + result.value;
+                    return 'expected 01/02/2014 but was: ' + result.value;
                 }
             );
         }());

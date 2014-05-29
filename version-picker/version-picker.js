@@ -5,6 +5,8 @@ window.onload = function onLoad(){
         var
             RANGE_MIN = new Date('01/01/2004'),
             RANGE_MAX = new Date('12/31/2014'),
+            master,
+            compare,
             MARGINS = 10,
             CIRCLE_RAY = 5,
             CIRCLE_SELECTED_RAY = 10,
@@ -19,21 +21,27 @@ window.onload = function onLoad(){
                 seed = max - min,
                 datesRange = [];
                 while (datesRange.length < numEntries){
-                    datesRange.push(
-                        new Date(parseInt(Math.random() * seed + min, 10))
-                    );
+                    datesRange.push({
+                        date: new Date(parseInt(Math.random() * seed + min, 10))
+                    });
                 }
-                return datesRange.sort();
+                return datesRange.sort(function sortFn(a, b){
+                    return (+a) - (+b);
+                });
             },
-            
             data = randomDates(
                 RANGE_MIN,
                 RANGE_MAX,
                 Math.random() * 45 + 5
             ),
-            
+            dateAccessor = function dateAccessor(d){
+                return d.date;
+            },
             xScale = d3.time.scale.utc()
-                .domain([d3.min(data), d3.max(data)])
+                .domain([
+                    d3.min(data, dateAccessor),
+                    d3.max(data, dateAccessor)
+                ])
                 .range([MARGINS, visWidth - MARGINS]),
             
             // Let's add the X axis
@@ -51,11 +59,11 @@ window.onload = function onLoad(){
             },
 
             keyFn = function keyFn(d){
-                return +d;
+                return +d.date;
             },
 
             cxFn = function cxFn(d){
-                return ((xScale(d) / visWidth) * 100) + '%';
+                return ((xScale(d.date) / visWidth) * 100) + '%';
             },
 
             appendCircles = function appendCircles(selectionFn){
@@ -67,19 +75,38 @@ window.onload = function onLoad(){
                     .attr('stroke', '#980606')
                     .attr('data-selected', 'false')
                     .on('click', function clickFn(d){
-                        console.log(d);
-                        d3.selectAll('circle')
-                            .attr('data-selected', 'false')
-                            .attr('r', CIRCLE_RAY)
-                            .attr('fill', CIRCLE_FILL);
-                        d3.select(d3.event.toElement)
-                            .attr('data-selected', 'true')
+                        var el = d3.select(this);
+                        //console.log(d);
+
+                        // Reset previously selected master
+                        if (master){
+                            master
+                                /*.filter(function filterFn(d){
+                                    return d.master;
+                                })*/
+                                .datum(function datumFn(d){
+                                    d.master = false;
+                                })
+                                .attr('r', CIRCLE_RAY)
+                                .attr('fill', CIRCLE_FILL);
+                        }
+                        
+                        // Sets the properties for this circle to be the master
+                        console.log("data", el.datum());
+                        
+                            /*.datum(function datumFn(d){
+                                d.master = true;
+                                console.log(d);
+                            })
                             .attr('r', CIRCLE_SELECTED_RAY)
-                            .attr('fill', CIRCLE_SELECTED_FILL);
+                            .attr('fill', CIRCLE_SELECTED_FILL);*/
+
+                        // Stores reference to current master
+                        master = d3.select(this);
                     })
                     .append('title')
                     .text(function textFn(d){
-                        return d;
+                        return d.date;
                     });
             },
 
@@ -116,9 +143,11 @@ window.onload = function onLoad(){
                     // Updates the dataset
                     if (isZoomIn){
                         data.forEach(function forEachFn(d){
-                            var mills = (+d);
+                            var mills = (+d.date);
                             if (mills >= minRangeNum && mills <= maxRangeNum){
-                                zoomedData.push(new Date(d));
+                                zoomedData.push({
+                                    date: new Date(d.date)
+                                });
                             }
                         });
 
@@ -168,9 +197,9 @@ window.onload = function onLoad(){
             indicatorLine;
 
         svg.append('line')
-            .attr('x1', xScale(d3.min(data)))
+            .attr('x1', xScale(d3.min(data, dateAccessor)))
             .attr('y1', '50')
-            .attr('x2', xScale(d3.max(data)))
+            .attr('x2', xScale(d3.max(data, dateAccessor)))
             .attr('y2', '50')
             .attr('stroke', '#000')
             .attr('stroke-width', '1');
@@ -195,7 +224,7 @@ window.onload = function onLoad(){
                         min = clientX - rayGap,
                         max = clientX + rayGap;
                     return data.some(function someFn(d){
-                        var dRange = xScale(d);
+                        var dRange = xScale(d.date);
                         if (dRange <= max && dRange >= min){
                             dSpot = dRange;
                             return true;
@@ -204,27 +233,38 @@ window.onload = function onLoad(){
                 };
             indicatorLine.attr('transform', 'translate(' + clientX + ', 0)');
             // Shows the date corresponding to the current bullet
-            if (dataMatches()){
+            /*if (dataMatches()){
                 indicatorDate
                     .attr('opacity', 1)
                     .attr('transform', 'translate(' + clientX + ',' + 20 + ')')
                     .text(xScale.invert(dSpot));
                 svg.selectAll("circle")
                     .filter(function filterFn(d){
-                        return xScale(d) === dSpot;
+                        return xScale(d.date) === dSpot;
                     })
                     .attr('fill', CIRCLE_SELECTED_FILL)
                     .attr('r', CIRCLE_SELECTED_RAY);
             }
             else {
                 svg.selectAll("circle")
-                    .filter(function filterFn(d){
-                        return d3.select(this).attr("data-selected") === "false";
+                    .filter(function filterFn(){
+                        var el = d3.select(this),
+                            isMaster = function isMaster(){
+                                return el.datum(function datumFn(d){
+                                        return !d.master;
+                                    });
+                            },
+                            isHighlighted = function isHighlighted(){
+                                return el.attr('r') === CIRCLE_SELECTED_RAY;
+                            };
+                        return !isMaster() && isHighlighted();
                     })
                     .attr('fill', CIRCLE_FILL)
                     .attr('r', CIRCLE_RAY);
+
+                // Hides the date tooltip
                 indicatorDate.attr('opacity', 0);
-            }
+            }*/
         });
         
         appendCircles(function selectionFn(){

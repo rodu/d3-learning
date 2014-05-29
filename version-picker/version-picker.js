@@ -80,23 +80,33 @@ window.onload = function onLoad(){
                     MAX_ZOOMS = 4,
                     zoomings = [];
                 return function zoomHandlerClosure(factor){
-                    var zoomedData = [],
-                        isZoomIn = factor > 0,
-                        zoom = isZoomIn ? 250 : 750,
-                        clientX = d3.event.clientX,
-                        minRangeDate = xScale.invert(clientX - zoom),
-                        maxRangeDate = xScale.invert(clientX + zoom),
-                        minRangeNum = (+minRangeDate),
-                        maxRangeNum = (+maxRangeDate),
-                        circles;
+                    var
+                        zoom,
+                        clientX,
+                        circles,
+                        zoomedData,
+                        minRangeNum,
+                        maxRangeNum,
+                        minRangeDate,
+                        maxRangeDate,
+                        isZoomIn = factor > 0;
 
+                    if (isZoomIn && zoomings.length > MAX_ZOOMS){
+                        return;
+                    }
+                    if (!isZoomIn && zoomings.length === 0){
+                        return;
+                    }
+                    zoomedData = [];
+                    clientX = d3.event.clientX;
+                    zoom = isZoomIn ? 250 : 750;
+                    minRangeDate = xScale.invert(clientX - zoom);
+                    maxRangeDate = xScale.invert(clientX + zoom);
+                    minRangeNum = (+minRangeDate);
+                    maxRangeNum = (+maxRangeDate);
                     
                     // Updates the dataset
                     if (isZoomIn){
-                        if (zoomings.length > MAX_ZOOMS){
-                            return;
-                        }
-
                         data.forEach(function forEachFn(d){
                             var mills = (+d);
                             if (mills >= minRangeNum && mills <= maxRangeNum){
@@ -113,48 +123,33 @@ window.onload = function onLoad(){
                         xScale.domain([minRangeDate, maxRangeDate]);
                     }
                     else { // zoom out
-                        if (zoomings.length === 0){
-                            return;
-                        }
                         (function zoomOutFn(){
                             // Updates zommings removing last one
                             var popZoom = zoomings.pop();
                             xScale.domain(popZoom.domain);
                             zoomedData = popZoom.data;
                         }());
-                        
                     }
                     
                     // Applies the zoomed data set and gets reference to circles
-                    circles = svg.selectAll("circle")
-                        .data(zoomedData, keyFn);
+                    circles = svg.selectAll("circle").data(zoomedData, keyFn);
                     
                     // Updates the position of the circles in rage
-                    circles.transition()
-                        .duration(500)
-                        .attr("cx", cxFn);
+                    circles.transition().duration(500).attr("cx", cxFn);
 
-                    // Adds back missing circles on zooming out
-                    appendCircles(function selectionFn(){
-                        return circles.enter();
-                    });
-                    
-                    // Removes the circles out of new range
-                    circles.exit()
-                        /*.transition()
-                        .duration(500)
-                        .attr("cx", (function xFn(d){
-                            var popZoom = zoomings[zoomings.length - 1],
-                                xScale = d3.time.scale.utc().domain(popZoom.domain);
-                            return function(d){
-                                return +d > +xScale.invert(clientX) ? visWidth : 0;
-                            };
-                        }()))*/
-                        .remove();
+                    if (isZoomIn){
+                        // Removes the circles out of new range
+                        circles.exit().remove();
+                    }
+                    else {
+                        // Adds back missing circles on zooming out
+                        appendCircles(function selectionFn(){
+                            return circles.enter();
+                        });
+                    }
 
                     // Updates the axis
-                    svg.select(".axis")
-                        .call(xAxis);
+                    svg.select(".axis").call(xAxis);
                 };
             }()),
 
@@ -194,6 +189,7 @@ window.onload = function onLoad(){
                 .call(xAxis);
         });
 
+        // Attaches event for handling zoom in and out
         svg.on("wheel", function(){
             zoomHandler(d3.event.wheelDelta);
         });

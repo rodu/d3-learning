@@ -220,7 +220,7 @@ window.onload = function onLoad(){
         .attr('stroke', '#000')
         .attr('stroke-width', '1');
     
-    indicatorDate = svg.append('text');
+    indicatorDate = svg.append('text').attr('class', 'indicator-date');
     // Handles movement of indicator line
     (function mouseMovement(){
         var
@@ -252,9 +252,15 @@ window.onload = function onLoad(){
                     lastDSpot = dSpot;
                     // Shows the date of the current spot the mouse is over
                     indicatorDate.attr('opacity', 1)
-                        .attr('transform',
-                            'translate(' + clientX + ',' + 20 + ')')
-                        .text(dSpot.date);
+                        .text(dSpot.date)
+                        .attr('fill', '#A47878')
+                        .attr('transform', function transformFn(){
+                            var GAP = 10,
+                                textWidth = this.getComputedTextLength(),
+                                x = clientX < visWidth - textWidth - GAP ?
+                                clientX + GAP : clientX - textWidth - GAP;
+                            return 'translate(' + x + ',' + 20 + ')';
+                        });
                     
                     elSpot = svg.selectAll('circle')
                         .filter(function filterFn(d){
@@ -271,7 +277,6 @@ window.onload = function onLoad(){
                     
                     // Shows the compare flag on items to be compared
                     if (elMaster && !dSpot.isMaster && !dSpot.isCompared){
-                        console.log(typeof elSpot.attr('cy'), elSpot.attr('r'));
                         elCompareTooltip = svg.append('rect')
                             .attr('class', 'compare-rect')
                             .attr('x', xScale(dSpot.date) - 20)
